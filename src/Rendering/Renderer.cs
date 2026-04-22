@@ -41,10 +41,19 @@ public class Renderer
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left))
         {
+            var mouse = Raylib.GetMousePosition();
+
             var quitRect = new Rectangle(Layout.QuitButtonX, Layout.QuitButtonY, Layout.QuitButtonWidth, Layout.QuitButtonHeight);
-            if (Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), quitRect))
+            if (Raylib.CheckCollisionPointRec(mouse, quitRect))
             {
                 WantsQuit = true;
+                return;
+            }
+
+            var restartRect = new Rectangle(Layout.RestartButtonX, Layout.RestartButtonY, Layout.RestartButtonWidth, Layout.RestartButtonHeight);
+            if (Raylib.CheckCollisionPointRec(mouse, restartRect))
+            {
+                Restart();
                 return;
             }
         }
@@ -60,6 +69,18 @@ public class Renderer
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left))
         {
+            if (_selectedCard != null)
+            {
+                var discardRect = new Rectangle(Layout.DiscardButtonX, Layout.DiscardButtonY, Layout.DiscardButtonWidth, Layout.DiscardButtonHeight);
+                if (Raylib.CheckCollisionPointRec(mousePos, discardRect))
+                {
+                    _gameController.TryDiscardCard(_selectedCard);
+                    _selectedCard = null;
+                    _validTargets = null;
+                    return;
+                }
+            }
+
             for (int i = 0; i < _state.Hand.Count; i++)
             {
                 var cardRect = new Rectangle(
@@ -190,12 +211,14 @@ public class Renderer
                 int cellX = startX + c * Layout.SubCellSize;
                 int cellY = startY + r * Layout.SubCellSize;
 
-                Raylib.DrawRectangle(cellX, cellY, Layout.SubCellSize, Layout.SubCellSize, GetSubCellColor(composite[r, c]));
+                DrawSubCell(cellX, cellY, composite[r, c]);
 
                 if (_state.Reachable.Contains(new SubCoord(c, r)))
                     Raylib.DrawRectangle(cellX, cellY, Layout.SubCellSize, Layout.SubCellSize, Layout.ColorReachable);
             }
         }
+
+        DrawHandSizeLabel(startX, startY, _state.ActiveCardDef.HandSize);
     }
 
     private void DrawInactiveCell(MapCoord coord, int startX, int startY)
@@ -211,7 +234,7 @@ public class Renderer
                 int cellX = startX + offset + c * Layout.SubCellSize;
                 int cellY = startY + offset + r * Layout.SubCellSize;
 
-                Raylib.DrawRectangle(cellX, cellY, Layout.SubCellSize, Layout.SubCellSize, GetSubCellColor(tile.Grid[r, c]));
+                DrawSubCell(cellX, cellY, tile.Grid[r, c]);
             }
         }
     }
@@ -233,8 +256,18 @@ public class Renderer
                     int cellX = startX + c * Layout.SubCellSize;
                     int cellY = startY + r * Layout.SubCellSize;
 
-                    Raylib.DrawRectangle(cellX, cellY, Layout.SubCellSize, Layout.SubCellSize, GetSubCellColor(card.Grid[r, c]));
+                    DrawSubCell(cellX, cellY, card.Grid[r, c]);
                 }
+            }
+
+            DrawHandSizeLabel(startX, startY, card.HandSize);
+
+            if (card == _selectedCard)
+            {
+                Raylib.DrawRectangleLinesEx(
+                    new Rectangle(startX, startY, Layout.CellSize, Layout.CellSize),
+                    Layout.SelectedCardBorderThickness,
+                    Layout.ColorSelectedCard);
             }
         }
     }
@@ -244,8 +277,17 @@ public class Renderer
         Raylib.DrawText($"Deck: {_state.DeckCount}", Layout.HandStartX + 150, 20, 20, Color.White);
         Raylib.DrawText($"Discard: {_state.DiscardCount}", Layout.HandStartX + 250, 20, 20, Color.White);
 
+        Raylib.DrawRectangle(Layout.RestartButtonX, Layout.RestartButtonY, Layout.RestartButtonWidth, Layout.RestartButtonHeight, new Color(40, 80, 120, 255));
+        Raylib.DrawText("RESTART", Layout.RestartButtonX + 10, Layout.RestartButtonY + 8, 18, Color.White);
+
         Raylib.DrawRectangle(Layout.QuitButtonX, Layout.QuitButtonY, Layout.QuitButtonWidth, Layout.QuitButtonHeight, new Color(120, 40, 40, 255));
         Raylib.DrawText("QUIT", Layout.QuitButtonX + 20, Layout.QuitButtonY + 8, 18, Color.White);
+
+        var discardButtonColor = _selectedCard != null
+            ? new Color(160, 80, 20, 255)
+            : new Color(55, 55, 55, 255);
+        Raylib.DrawRectangle(Layout.DiscardButtonX, Layout.DiscardButtonY, Layout.DiscardButtonWidth, Layout.DiscardButtonHeight, discardButtonColor);
+        Raylib.DrawText("DISCARD", Layout.DiscardButtonX + 10, Layout.DiscardButtonY + 6, 16, Color.White);
 
         if (_statusMessage != null && Raylib.GetTime() < _statusMessageExpiry)
             Raylib.DrawText(_statusMessage, Layout.MapStartX, Layout.WindowHeight - 30, 18, Color.Orange);
@@ -262,14 +304,46 @@ public class Renderer
         }
     }
 
+    private static void DrawHandSizeLabel(int cardStartX, int cardStartY, int handSize)
+    {
+        string label = handSize.ToString();
+        int textWidth = Raylib.MeasureText(label, Layout.HandSizeFontSize);
+        Raylib.DrawText(label,
+            cardStartX + (Layout.SubCellSize - textWidth) / 2,
+            cardStartY + (Layout.SubCellSize - Layout.HandSizeFontSize) / 2,
+            Layout.HandSizeFontSize,
+            Layout.ColorHandSizeLabel);
+    }
+
+    private static void DrawSubCell(int x, int y, SubCell cell)
+    {
+        Raylib.DrawRectangle(x, y, Layout.SubCellSize, Layout.SubCellSize, GetSubCellColor(cell));
+        var label = GetItemLabel(cell);
+        if (label == null) return;
+        int textWidth = Raylib.MeasureText(label, Layout.ItemLabelFontSize);
+        Raylib.DrawText(label,
+            x + (Layout.SubCellSize - textWidth) / 2,
+            y + (Layout.SubCellSize - Layout.ItemLabelFontSize) / 2,
+            Layout.ItemLabelFontSize,
+            Layout.ColorItemLabel);
+    }
+
+    private static string? GetItemLabel(SubCell cell) => cell switch
+    {
+        SubCell.Key     => "K",
+        SubCell.Door    => "D",
+        SubCell.Shuffle => "S",
+        _               => null
+    };
+
     private static Color GetSubCellColor(SubCell cell) => cell switch
     {
         SubCell.Blocked  => Layout.ColorBlocked,
         SubCell.Passable => Layout.ColorPassable,
         SubCell.Hole     => Layout.ColorHole,
-        SubCell.Door     => Layout.ColorDoor,
-        SubCell.Key      => Layout.ColorKey,
-        SubCell.Shuffle  => Layout.ColorShuffle,
+        SubCell.Door     => Layout.ColorItem,
+        SubCell.Key      => Layout.ColorItem,
+        SubCell.Shuffle  => Layout.ColorItem,
         _                => Color.Magenta
     };
 }

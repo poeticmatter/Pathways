@@ -176,6 +176,18 @@ Each turn executes these steps exactly, in order:
 
 ---
 
+## Discard Action
+
+At any point during play, the player may discard a selected card from hand without playing it:
+
+1. Remove the card from `Hand` and add it to `Discard`.
+2. Draw from `Deck` until `Hand.Count == ActiveCardDef.HandSize` (same normalize logic as after a turn).
+3. Check loss — if `Hand.Count == 0` and `Deck.Count == 0` → `Status = Lost`.
+
+This action does **not** advance the player's position and does **not** change the active card or room. It is useful for cycling through cards when no valid move exists.
+
+---
+
 ## Valid Move Rules
 
 A cell `(targetCol, targetRow)` is a valid destination for a selected card if all of:
@@ -265,14 +277,16 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 
 ## Rendering Conventions
 
-- Window resolution: 1280×720 (16:9), resizable with layout reflow.
+- Window resolution: 1920×1080, fixed.
 - Map panel: left side. Hand panel: right side.
 - Map cells scale uniformly; sub-cells render as small squares.
 - Current cell highlights the composite grid with reachability tint.
 - Non-current cells show only their map tile's center 3×3 region.
 - Valid move targets are highlighted when a card is selected.
+- A selected card in hand shows a colored border outline.
 - Colors and visual style are thematic (dark background, glowing paths).
-- After a win or loss, pressing **R** restarts the game.
+- A **RESTART** button (top-right) and **DISCARD** button (bottom of hand panel) are always visible. After a win or loss, pressing **R** also restarts.
+- The **HandSize** number for each card is drawn on the top-left sub-cell `[row=0, col=0]` of the card grid. It is visible on cards in hand and on the currently active card on the map.
 
 ---
 
@@ -299,3 +313,4 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 | 2026-04-21 | Initial architecture document | Aurore |
 | 2026-04-22 | Clarify key/door pairing invariant (at most one pair per pass); add IReadOnlyGameState to rendering module rules; add R-to-restart to rendering conventions | Aurore |
 | 2026-04-22 | Replace verbose string-array grid format with compact row-string format (`#.HKSD` notation); document in new Asset Data Format section | Aurore |
+| 2026-04-22 | Add Discard action mechanic; add HandSize label on top-left sub-cell of cards; update rendering conventions | Aurore |

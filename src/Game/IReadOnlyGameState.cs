@@ -10,6 +10,7 @@ public interface IReadOnlyGameState
     int DeckCount { get; }
     int DiscardCount { get; }
     MapCoord CurrentCell { get; }
+    CardDefinition ActiveCardDef { get; }
     SubCell[,] ActiveCompositeGrid { get; }
     IReadOnlySet<SubCoord> Reachable { get; }
     GameStatus Status { get; }

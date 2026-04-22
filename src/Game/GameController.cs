@@ -99,6 +99,21 @@ public class GameController
         }
     }
 
+    public bool TryDiscardCard(CardDefinition card)
+    {
+        if (_state.Status != GameStatus.Playing) return false;
+        if (!_state.Hand.Contains(card)) return false;
+
+        _state.Hand.Remove(card);
+        _state.Discard.Add(card);
+        NormalizeHand();
+
+        if (_state.Hand.Count == 0 && _state.Deck.Count == 0)
+            _state.Status = GameStatus.Lost;
+
+        return true;
+    }
+
     public bool TryPlayCard(CardDefinition card, MapCoord targetCell)
     {
         if (_state.Status != GameStatus.Playing) return false;
