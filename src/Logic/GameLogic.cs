@@ -184,7 +184,7 @@ public static class GameLogic
         throw new ArgumentException("Cells are not orthogonal neighbors");
     }
 
-    public static bool IsValidMove(MapCoord currentCell, HashSet<SubCoord> currentReachable, CardDefinition candidateCard, MapCoord targetCell)
+    public static bool IsValidMove(MapCoord currentCell, IReadOnlySet<SubCoord> currentReachable, CardDefinition candidateCard, MapCoord targetCell)
     {
         // 1. Orthogonally adjacent
         if (Math.Abs(currentCell.Col - targetCell.Col) + Math.Abs(currentCell.Row - targetCell.Row) != 1) return false;
@@ -197,7 +197,8 @@ public static class GameLogic
         var exitCoord = GetExitPoint(exitDirection);
         if (!currentReachable.Contains(exitCoord)) return false;
 
-        // 4. Candidate card has Passable at entry edge
+        // 4. Candidate card has Passable at entry edge.
+        // Entry points are always at row/col 0 or 8, which is card space — tile space starts at 3.
         var entryDirection = GetEntryDirectionFromMove(currentCell, targetCell);
         var entryCoord = GetEntryPoint(entryDirection);
         var entryCell = candidateCard.Grid[entryCoord.Row, entryCoord.Col];

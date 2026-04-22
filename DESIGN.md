@@ -155,6 +155,8 @@ A sub-cell belongs to the tile if `subRow` ∈ [3,5] and `subCol` ∈ [3,5]; oth
 
 Key-door pairing is positional: pair `keys[0]` with `doors[0]`, etc. Order within the BFS result is insertion order (queue order).
 
+Each card and tile holds at most one special cell (Key, Door, or Shuffle), so at most one pair is consumed per resolution pass. The `min(keys, doors)` loop handles the general case but will never consume more than one pair in practice.
+
 ---
 
 ## Turn Structure
@@ -226,7 +228,7 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 **Rules:**
 - `Logic` has zero Raylib dependencies and zero side effects. All functions are pure and testable in isolation.
 - `Game` owns the single mutable `GameState`. No other layer mutates it.
-- `Rendering` reads `GameState` (read-only view) and produces draw calls. It does not modify game state.
+- `Rendering` reads game state through `IReadOnlyGameState` and produces draw calls. It dispatches player actions through `GameController` methods — it never mutates `GameState` directly.
 - `Data` defines types and loads/parses static JSON definitions. No game logic here.
 
 ---
@@ -240,6 +242,7 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 - Non-current cells show only their map tile's center 3×3 region.
 - Valid move targets are highlighted when a card is selected.
 - Colors and visual style are thematic (dark background, glowing paths).
+- After a win or loss, pressing **R** restarts the game.
 
 ---
 
@@ -264,3 +267,4 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 | Date | Change | Author |
 |---|---|---|
 | 2026-04-21 | Initial architecture document | Aurore |
+| 2026-04-22 | Clarify key/door pairing invariant (at most one pair per pass); add IReadOnlyGameState to rendering module rules; add R-to-restart to rendering conventions | Aurore |

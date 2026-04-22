@@ -10,12 +10,9 @@ public static class Layout
     public const int MapStartX = 50;
     public const int MapStartY = 50;
 
-    // Cell is a single MapCoord on 5x5 map
-    public const int CellSize = 108; // 9 subcells * 12px
-    public const int CellPadding = 5;
-
-    // SubCell is a single spot in a 9x9 or 3x3 grid
     public const int SubCellSize = 12;
+    public const int CellSize = SubCellSize * 9;
+    public const int CellPadding = 5;
 
     public const int HandStartX = 800;
     public const int HandStartY = 50;
