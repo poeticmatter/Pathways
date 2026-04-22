@@ -53,7 +53,7 @@ Layers may only depend on layers below them (see DESIGN.md §Modules). Any Rayli
 
 ### General
 
-- Target `net9.0`. Use top-level statements in `Program.cs`.
+- Target `net10.0`. Use top-level statements in `Program.cs`.
 - Enable nullable reference types (`<Nullable>enable</Nullable>`). Never suppress nullable warnings with `!` unless the nullability is structurally guaranteed and a comment explains why.
 - No `dynamic`. No `object` used as a generic container.
 - Prefer `record` and `record struct` for value objects and results. Prefer `readonly struct` for small hot-path types.

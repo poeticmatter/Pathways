@@ -8,148 +8,141 @@ namespace CardPathways.Game;
 
 public class GameController
 {
-    public GameState State { get; }
+    private readonly GameState _state;
+    private readonly List<CardDefinition> _allCards;
+    private readonly List<MapTile> _allTiles;
+
+    public IReadOnlyGameState State => _state;
 
     public GameController(List<CardDefinition> allCards, List<MapTile> allTiles)
     {
-        State = new GameState();
-        Initialize(allCards, allTiles);
+        _allCards = allCards;
+        _allTiles = allTiles;
+        _state = new GameState();
+        Initialize();
     }
 
-    private void Initialize(List<CardDefinition> allCards, List<MapTile> allTiles)
+    public void Reset() => Initialize();
+
+    private void Initialize()
     {
+        _state.Deck.Clear();
+        _state.Hand.Clear();
+        _state.Discard.Clear();
+        _state.Status = GameStatus.Playing;
+
         var random = new Random();
 
-        // Separate cards
-        var startCard = allCards.First(c => c.Id == 0);
-        var deckCards = allCards.Where(c => c.Id != 0).ToList();
+        var startCard = _allCards.First(c => c.Id == 0);
+        var deckCards = _allCards.Where(c => c.Id != 0).ToList();
+        _state.Deck.AddRange(deckCards.OrderBy(x => random.Next()));
 
-        // Shuffle deck
-        State.Deck.AddRange(deckCards.OrderBy(x => random.Next()));
-
-        // Separate tiles
-        var reshuffleTile = allTiles.FirstOrDefault(t => t.Grid[1, 1] == SubCell.Shuffle)
+        var reshuffleTile = _allTiles.FirstOrDefault(t => t.Grid[1, 1] == SubCell.Shuffle)
             ?? throw new InvalidOperationException("No tile with a Shuffle sub-cell at center (1,1) found in tiles.json");
-        var standardTiles = allTiles.Where(t => t.DefinitionId != reshuffleTile.DefinitionId).ToList();
+        var standardTiles = _allTiles.Where(t => t.DefinitionId != reshuffleTile.DefinitionId).ToList();
 
-        // There might be more standard tiles than needed, shuffle and take 24
-        var shuffledStandardTiles = standardTiles.OrderBy(x => random.Next()).Take(24).ToList();
+        int mapRows = _state.Map.GetLength(0);
+        int mapCols = _state.Map.GetLength(1);
+        int nonReshuffleCount = mapRows * mapCols - 1;
 
+        if (standardTiles.Count < nonReshuffleCount)
+            throw new InvalidOperationException(
+                $"tiles.json has only {standardTiles.Count} standard tiles; {nonReshuffleCount} are required to fill the map.");
+
+        const int reshuffleRow = 2;
+        const int reshuffleCol = 2;
+
+        var shuffledTiles = standardTiles.OrderBy(x => random.Next()).Take(nonReshuffleCount).ToList();
         int tileIndex = 0;
-        for (int row = 0; row < 5; row++)
+        for (int row = 0; row < mapRows; row++)
         {
-            for (int col = 0; col < 5; col++)
+            for (int col = 0; col < mapCols; col++)
             {
-                if (col == 2 && row == 2)
-                {
-                    State.Map[row, col] = reshuffleTile.Clone();
-                }
-                else
-                {
-                    State.Map[row, col] = shuffledStandardTiles[tileIndex++].Clone();
-                }
+                _state.Map[row, col] = (col == reshuffleCol && row == reshuffleRow)
+                    ? reshuffleTile.Clone()
+                    : shuffledTiles[tileIndex++].Clone();
             }
         }
 
-        // Setup start
-        State.CurrentCell = new MapCoord(0, 4);
-        State.EntryEdge = Direction.Left; // Player enters from the left edge
+        // Entry cell (0,4): player enters from the left edge
+        var startCell = new MapCoord(Col: 0, Row: 4);
+        const Direction startEntryEdge = Direction.Left;
 
-        // Compute initial placement for start card
-        var initialTile = State.Map[4, 0];
-        var placement = GameLogic.ResolvePlacement(initialTile, startCard, State.EntryEdge);
+        _state.CurrentCell = startCell;
+        _state.EntryEdge = startEntryEdge;
 
-        State.Map[4, 0] = placement.ModifiedTile;
-        State.ActiveCardGrid = placement.ModifiedCardGrid;
-        State.Reachable = placement.Reachable;
-        State.ActiveCardDef = startCard;
+        var placement = GameLogic.ResolvePlacement(_state.Map[startCell.Row, startCell.Col], startCard, startEntryEdge);
+        _state.Map[startCell.Row, startCell.Col] = placement.ModifiedTile;
+        _state.ActiveCardGrid = placement.ModifiedCardGrid;
+        _state.Reachable = placement.Reachable;
+        _state.ActiveCardDef = startCard;
+        _state.ActiveCompositeGrid = GameLogic.BuildCompositeGrid(
+            _state.Map[startCell.Row, startCell.Col], _state.ActiveCardGrid);
 
         NormalizeHand();
     }
 
-    public void NormalizeHand()
+    private void NormalizeHand()
     {
-        int targetSize = State.ActiveCardDef.HandSize;
+        int targetSize = _state.ActiveCardDef.HandSize;
 
-        // Discard excess
-        while (State.Hand.Count > targetSize)
+        while (_state.Hand.Count > targetSize)
         {
-            State.Discard.Add(State.Hand[^1]);
-            State.Hand.RemoveAt(State.Hand.Count - 1);
+            _state.Discard.Add(_state.Hand[^1]);
+            _state.Hand.RemoveAt(_state.Hand.Count - 1);
         }
 
-        // Draw cards
-        while (State.Hand.Count < targetSize && State.Deck.Count > 0)
+        while (_state.Hand.Count < targetSize && _state.Deck.Count > 0)
         {
-            State.Hand.Add(State.Deck[0]);
-            State.Deck.RemoveAt(0);
+            _state.Hand.Add(_state.Deck[0]);
+            _state.Deck.RemoveAt(0);
         }
     }
 
     public bool TryPlayCard(CardDefinition card, MapCoord targetCell)
     {
-        if (State.Status != GameStatus.Playing) return false;
+        if (_state.Status != GameStatus.Playing) return false;
+        if (!_state.Hand.Contains(card)) return false;
+        if (!GameLogic.IsValidMove(_state.CurrentCell, _state.Reachable, card, targetCell)) return false;
 
-        if (!State.Hand.Contains(card)) return false;
+        var entryDirection = GameLogic.GetEntryDirectionFromMove(_state.CurrentCell, targetCell);
+        var result = GameLogic.ResolvePlacement(_state.Map[targetCell.Row, targetCell.Col], card, entryDirection);
 
-        if (!GameLogic.IsValidMove(State.CurrentCell, State.Reachable, card, targetCell))
-        {
-            return false;
-        }
+        _state.Map[targetCell.Row, targetCell.Col] = result.ModifiedTile;
+        _state.ActiveCardGrid = result.ModifiedCardGrid;
+        _state.Reachable = result.Reachable;
+        _state.CurrentCell = targetCell;
+        _state.EntryEdge = entryDirection;
+        _state.ActiveCompositeGrid = GameLogic.BuildCompositeGrid(result.ModifiedTile, result.ModifiedCardGrid);
 
-        // 1. Play card (valid move passed)
-        var entryDirection = GameLogic.GetEntryDirectionFromMove(State.CurrentCell, targetCell);
-        var targetTile = State.Map[targetCell.Row, targetCell.Col];
+        var previousActiveDef = _state.ActiveCardDef;
+        _state.ActiveCardDef = card;
 
-        // 2. Resolve placement
-        var result = GameLogic.ResolvePlacement(targetTile, card, entryDirection);
-
-        // 3. Update map
-        State.Map[targetCell.Row, targetCell.Col] = result.ModifiedTile;
-        State.ActiveCardGrid = result.ModifiedCardGrid;
-        State.Reachable = result.Reachable;
-        State.CurrentCell = targetCell;
-        State.EntryEdge = entryDirection;
-
-        var previousActiveDef = State.ActiveCardDef;
-        State.ActiveCardDef = card;
-
-        // 4. Discard old card
         if (previousActiveDef.Id != 0)
-        {
-            State.Discard.Add(previousActiveDef);
-        }
+            _state.Discard.Add(previousActiveDef);
 
-        // 5. Apply reshuffle
         if (result.TriggeredReshuffle)
         {
-            State.Deck.AddRange(State.Discard);
-            State.Discard.Clear();
-            var shuffledDeck = State.Deck.OrderBy(x => Random.Shared.Next()).ToList();
-            State.Deck.Clear();
-            State.Deck.AddRange(shuffledDeck);
+            _state.Deck.AddRange(_state.Discard);
+            _state.Discard.Clear();
+            var shuffledDeck = _state.Deck.OrderBy(x => Random.Shared.Next()).ToList();
+            _state.Deck.Clear();
+            _state.Deck.AddRange(shuffledDeck);
         }
 
-        // 6. Normalize hand
-        State.Hand.Remove(card);
+        _state.Hand.Remove(card);
         NormalizeHand();
 
-        // 7. Check win
-        if (State.CurrentCell.Col == 4 && State.CurrentCell.Row == 0)
+        if (_state.CurrentCell.Col == 4 && _state.CurrentCell.Row == 0)
         {
             var topExit = GameLogic.GetExitPoint(Direction.Top);
             var rightExit = GameLogic.GetExitPoint(Direction.Right);
-            if (State.Reachable.Contains(topExit) || State.Reachable.Contains(rightExit))
-            {
-                State.Status = GameStatus.Won;
-            }
+            if (_state.Reachable.Contains(topExit) || _state.Reachable.Contains(rightExit))
+                _state.Status = GameStatus.Won;
         }
 
-        // 8. Check loss
-        if (State.Status == GameStatus.Playing && State.Hand.Count == 0 && State.Deck.Count == 0)
-        {
-            State.Status = GameStatus.Lost;
-        }
+        if (_state.Status == GameStatus.Playing && _state.Hand.Count == 0 && _state.Deck.Count == 0)
+            _state.Status = GameStatus.Lost;
 
         return true;
     }
