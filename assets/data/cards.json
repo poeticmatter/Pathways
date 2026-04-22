@@ -1,6 +1,7 @@
 [
   {
     "id": 0,
+    "role": "start",
     "handSize": 3,
     "grid": [
       "         ",

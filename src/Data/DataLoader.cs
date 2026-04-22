@@ -16,6 +16,7 @@ public static class DataLoader
     private class JsonCard
     {
         public int Id { get; set; }
+        public string? Role { get; set; }
         public int HandSize { get; set; }
         public string[] Grid { get; set; } = [];
     }
@@ -23,6 +24,7 @@ public static class DataLoader
     private class JsonTile
     {
         public int Id { get; set; }
+        public string? Role { get; set; }
         public string[] Grid { get; set; } = [];
     }
 
@@ -40,7 +42,7 @@ public static class DataLoader
                 for (int col = 0; col < 9; col++)
                     grid[row, col] = ParseSubCell(jc.Grid[row][col], filePath);
 
-            cards.Add(new CardDefinition { Id = jc.Id, HandSize = jc.HandSize, Grid = grid });
+            cards.Add(new CardDefinition { Id = jc.Id, Role = ParseCardRole(jc.Role, filePath), HandSize = jc.HandSize, Grid = grid });
         }
         return cards;
     }
@@ -59,10 +61,24 @@ public static class DataLoader
                 for (int col = 0; col < 3; col++)
                     grid[row, col] = ParseSubCell(jt.Grid[row][col], filePath);
 
-            tiles.Add(new MapTile { DefinitionId = jt.Id, Grid = grid });
+            tiles.Add(new MapTile { DefinitionId = jt.Id, Role = ParseTileRole(jt.Role, filePath), Grid = grid });
         }
         return tiles;
     }
+
+    private static CardRole ParseCardRole(string? role, string filePath) => role switch
+    {
+        null or "normal" => CardRole.Normal,
+        "start"          => CardRole.Start,
+        _                => throw new InvalidOperationException($"Unknown card role '{role}' in '{filePath}'")
+    };
+
+    private static TileRole ParseTileRole(string? role, string filePath) => role switch
+    {
+        null or "normal" => TileRole.Normal,
+        "start"          => TileRole.Start,
+        _                => throw new InvalidOperationException($"Unknown tile role '{role}' in '{filePath}'")
+    };
 
     private static SubCell ParseSubCell(char c, string filePath) => c switch
     {

@@ -33,40 +33,43 @@ public class GameController
 
         var random = new Random();
 
-        var startCard = _allCards.First(c => c.Id == 0);
-        var deckCards = _allCards.Where(c => c.Id != 0).ToList();
+        var startCard = _allCards.FirstOrDefault(c => c.Role == CardRole.Start)
+            ?? throw new InvalidOperationException("No card with role 'start' found in cards.json");
+        var deckCards = _allCards.Where(c => c.Role != CardRole.Start).ToList();
         _state.Deck.AddRange(deckCards.OrderBy(x => random.Next()));
 
         var reshuffleTile = _allTiles.FirstOrDefault(t => t.Grid[1, 1] == SubCell.Shuffle)
             ?? throw new InvalidOperationException("No tile with a Shuffle sub-cell at center (1,1) found in tiles.json");
-        var standardTiles = _allTiles.Where(t => t.DefinitionId != reshuffleTile.DefinitionId).ToList();
+        var startTile = _allTiles.FirstOrDefault(t => t.Role == TileRole.Start)
+            ?? throw new InvalidOperationException("No tile with role 'start' found in tiles.json");
+        var poolTiles = _allTiles.Where(t => t.DefinitionId != reshuffleTile.DefinitionId && t.Role != TileRole.Start).ToList();
 
         int mapRows = _state.Map.GetLength(0);
         int mapCols = _state.Map.GetLength(1);
-        int nonReshuffleCount = mapRows * mapCols - 1;
+        int poolCount = mapRows * mapCols - 2;
 
-        if (standardTiles.Count < nonReshuffleCount)
+        if (poolTiles.Count < poolCount)
             throw new InvalidOperationException(
-                $"tiles.json has only {standardTiles.Count} standard tiles; {nonReshuffleCount} are required to fill the map.");
+                $"tiles.json has only {poolTiles.Count} pool tiles; {poolCount} are required to fill the map.");
+
+        // Entry cell (0,4): player enters from the left edge
+        var startCell = new MapCoord(Col: 0, Row: 4);
+        const Direction startEntryEdge = Direction.Left;
 
         const int reshuffleRow = 2;
         const int reshuffleCol = 2;
 
-        var shuffledTiles = standardTiles.OrderBy(x => random.Next()).Take(nonReshuffleCount).ToList();
+        var shuffledTiles = poolTiles.OrderBy(x => random.Next()).Take(poolCount).ToList();
         int tileIndex = 0;
         for (int row = 0; row < mapRows; row++)
         {
             for (int col = 0; col < mapCols; col++)
             {
-                _state.Map[row, col] = (col == reshuffleCol && row == reshuffleRow)
-                    ? reshuffleTile.Clone()
-                    : shuffledTiles[tileIndex++].Clone();
+                _state.Map[row, col] = (col == reshuffleCol && row == reshuffleRow) ? reshuffleTile.Clone()
+                    : (col == startCell.Col && row == startCell.Row)               ? startTile.Clone()
+                    :                                                                 shuffledTiles[tileIndex++].Clone();
             }
         }
-
-        // Entry cell (0,4): player enters from the left edge
-        var startCell = new MapCoord(Col: 0, Row: 4);
-        const Direction startEntryEdge = Direction.Left;
 
         _state.CurrentCell = startCell;
         _state.EntryEdge = startEntryEdge;
@@ -133,7 +136,7 @@ public class GameController
         var previousActiveDef = _state.ActiveCardDef;
         _state.ActiveCardDef = card;
 
-        if (previousActiveDef.Id != 0)
+        if (previousActiveDef.Role != CardRole.Start)
             _state.Discard.Add(previousActiveDef);
 
         if (result.TriggeredReshuffle)

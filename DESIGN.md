@@ -239,15 +239,32 @@ Example 3×3 tile with a door on the left edge:
 
 Cards are fixed templates loaded from JSON at startup. Card grids are 9×9 with the center 3×3 set to `Hole`. They carry no mutable state — mutations during interaction resolution are applied to a local copy, never to the definition.
 
-The **start card** (id 0) is a special template placed at `(0, 4)` at game start. It is never shuffled into the deck and never discarded (skip step 4 when the id is 0).
+Each card carries a `role` field (`CardRole` enum):
+
+| Value    | Meaning |
+|----------|---------|
+| `normal` | Shuffled into the deck at game start |
+| `start`  | Placed at the entry cell at game start; never shuffled into the deck and never discarded |
+
+Exactly one card must have `role: start`.
 
 ---
 
 ## Map Tile Data
 
-Map tiles are 3×3 grids. At game start:
-- 24 standard tiles are shuffled and assigned to all cells except `(2, 2)`.
-- The reshuffle tile (the one with a `Shuffle` sub-cell at its center) is always placed at `(2, 2)`.
+Map tiles are 3×3 grids. Each tile carries a `role` field (`TileRole` enum):
+
+| Value    | Meaning |
+|----------|---------|
+| `normal` | Eligible for random placement on the map |
+| `start`  | Always placed at the entry cell `(0, 4)` |
+
+The reshuffle tile is identified by having a `Shuffle` sub-cell at its center `(1, 1)` and is always placed at `(2, 2)`. Exactly one tile must have `role: start`; it is excluded from the random pool.
+
+At game start:
+- The start tile is placed at `(0, 4)`.
+- The reshuffle tile is placed at `(2, 2)`.
+- The remaining pool tiles are shuffled and fill the other 23 cells.
 
 Each tile's mutable state is a deep copy — tiles share no data between cells.
 
@@ -314,3 +331,4 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 | 2026-04-22 | Clarify key/door pairing invariant (at most one pair per pass); add IReadOnlyGameState to rendering module rules; add R-to-restart to rendering conventions | Aurore |
 | 2026-04-22 | Replace verbose string-array grid format with compact row-string format (`#.HKSD` notation); document in new Asset Data Format section | Aurore |
 | 2026-04-22 | Add Discard action mechanic; add HandSize label on top-left sub-cell of cards; update rendering conventions | Aurore |
+| 2026-04-22 | Replace magic Id==0 with CardRole/TileRole enums; start card and start tile are now declared in JSON via role field | Aurore |
