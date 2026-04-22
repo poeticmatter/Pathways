@@ -31,7 +31,7 @@ If a change makes DESIGN.md out of sync with the code, the code is wrong, not th
 ## Project Structure
 
 ```
-CardPathways/
+/                       ← repo root
 ├── CardPathways.csproj
 ├── Program.cs          ← entry point, game loop
 ├── src/
@@ -41,6 +41,7 @@ CardPathways/
 │   └── Rendering/      ← all Raylib-cs calls, draw functions, input
 ├── assets/
 │   └── data/           ← cards.json, tiles.json
+├── CLAUDE.md
 └── DESIGN.md
 ```
 
@@ -115,7 +116,7 @@ Layers may only depend on layers below them (see DESIGN.md §Modules). Any Rayli
 
 ```sh
 # Run
-dotnet run --project CardPathways
+dotnet run
 
 # Build release
 dotnet build -c Release
