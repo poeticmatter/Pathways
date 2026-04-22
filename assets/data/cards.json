@@ -3,1155 +3,165 @@
     "id": 0,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "         ",
+      "         ",
+      "         ",
+      "   HHH   ",
+      "###HHH###",
+      "   HHH   ",
+      "         ",
+      "         ",
+      "         "
     ]
   },
   {
     "id": 1,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #### ",
+      "       # ",
+      "   HHH # ",
+      "## HHH ##",
+      " # HHH   ",
+      " #       ",
+      " ####    ",
+      "    #    "
     ]
   },
   {
     "id": 2,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "key",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    K    ",
+      "    #    ",
+      "   HHH   ",
+      "   HHH   ",
+      "   HHH   ",
+      "    #    ",
+      "    #    ",
+      "    #    "
     ]
   },
   {
     "id": 3,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "door",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #    ",
+      "    #    ",
+      "   HHH   ",
+      "##DHHH   ",
+      "   HHH   ",
+      "         ",
+      "         ",
+      "         "
     ]
   },
   {
     "id": 4,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "passable",
-        "key",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #    ",
+      "    #    ",
+      "   HHH   ",
+      "   HHH#K#",
+      "   HHH   ",
+      "    #    ",
+      "    #    ",
+      "    #    "
     ]
   },
   {
     "id": 5,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "key",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #    ",
+      "    #    ",
+      "   HHH   ",
+      "#K#HHH###",
+      "   HHH   ",
+      "    #    ",
+      "    #    ",
+      "    #    "
     ]
   },
   {
     "id": 6,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "key",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #### ",
+      "       # ",
+      "   HHH # ",
+      "#K#HHH # ",
+      "   HHH # ",
+      "       # ",
+      "    #### ",
+      "    #    "
     ]
   },
   {
     "id": 7,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "door",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #    ",
+      "    #    ",
+      "   HHH   ",
+      "#D#HHH ##",
+      "   HHH # ",
+      "       # ",
+      "    #### ",
+      "    #    "
     ]
   },
   {
     "id": 8,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "door",
-        "passable",
-        "passable",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      " D###    ",
+      " #  #    ",
+      " # HHH   ",
+      "###HHH   ",
+      "   HHH   ",
+      "         ",
+      "         ",
+      "         "
     ]
   },
   {
     "id": 9,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #### ",
+      "       # ",
+      "   HHH # ",
+      "   HHH## ",
+      "   HHH   ",
+      "    #    ",
+      "    #    ",
+      "    #    "
     ]
   },
   {
     "id": 10,
     "handSize": 3,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable",
-        "hole",
-        "hole",
-        "hole",
-        "door",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "hole",
-        "hole",
-        "hole",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable",
-        "passable",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked",
-        "passable",
-        "blocked",
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "    #    ",
+      "    #### ",
+      "       # ",
+      "   HHH # ",
+      " ##HHHD# ",
+      " # HHH   ",
+      " #       ",
+      " ####    ",
+      "    #    "
     ]
   }
 ]

@@ -2,501 +2,201 @@
   {
     "id": 1,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " # ",
+      " ##",
+      "   "
     ]
   },
   {
     "id": 2,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      " # ",
+      " # "
     ]
   },
   {
     "id": 3,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " # ",
+      "## ",
+      "   "
     ]
   },
   {
     "id": 4,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      "   ",
+      " ##",
+      " # "
     ]
   },
   {
     "id": 5,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      "   ",
+      "## ",
+      " # "
     ]
   },
   {
     "id": 6,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      "## ",
+      " # "
     ]
   },
   {
     "id": 7,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " # ",
+      "###",
+      "   "
     ]
   },
   {
     "id": 8,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      "   ",
+      "###",
+      " # "
     ]
   },
   {
     "id": 9,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      " ##",
+      " # "
     ]
   },
   {
     "id": 10,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      "###",
+      " # "
     ]
   },
   {
     "id": 11,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "   ",
+      "###",
+      "   "
     ]
   },
   {
     "id": 12,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "   ",
+      " ##",
+      "   "
     ]
   },
   {
     "id": 13,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " # ",
+      " # ",
+      "   "
     ]
   },
   {
     "id": 14,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "   ",
+      "## ",
+      "   "
     ]
   },
   {
     "id": 15,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      "   ",
+      " # ",
+      " # "
     ]
   },
   {
     "id": 16,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ],
-      [
-        "passable",
-        "blocked",
-        "passable"
-      ],
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ]
+      " ##",
+      "# #",
+      "## "
     ]
   },
   {
     "id": 17,
     "grid": [
-      [
-        "passable",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "blocked",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "passable"
-      ]
+      "## ",
+      "# #",
+      " ##"
     ]
   },
   {
     "id": 18,
     "grid": [
-      [
-        "blocked",
-        "door",
-        "blocked"
-      ],
-      [
-        "passable",
-        "passable",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " D ",
+      "###",
+      "   "
     ]
   },
   {
     "id": 19,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "door",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      "D# ",
+      " # "
     ]
   },
   {
     "id": 20,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "key",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      " K ",
+      " # "
     ]
   },
   {
     "id": 21,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "door",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      "#D#",
+      " # "
     ]
   },
   {
     "id": 22,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "door"
-      ],
-      [
-        "passable",
-        "blocked",
-        "passable"
-      ],
-      [
-        "key",
-        "passable",
-        "blocked"
-      ]
+      " #D",
+      "# #",
+      "K# "
     ]
   },
   {
     "id": 23,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "passable",
-        "shuffle",
-        "passable"
-      ],
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ]
+      " # ",
+      "#S#",
+      " # "
     ]
   },
   {
     "id": 24,
     "grid": [
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ],
-      [
-        "passable",
-        "key",
-        "passable"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      "   ",
+      "#K#",
+      "   "
     ]
   },
   {
     "id": 25,
     "grid": [
-      [
-        "blocked",
-        "passable",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "key",
-        "blocked"
-      ],
-      [
-        "blocked",
-        "blocked",
-        "blocked"
-      ]
+      " # ",
+      " K ",
+      "   "
     ]
   }
 ]

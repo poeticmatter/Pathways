@@ -193,6 +193,36 @@ Entry sub-cells (on the candidate card) are the mirror:
 
 ---
 
+## Asset Data Format
+
+Card and tile grids are stored as arrays of row strings. Each character encodes one sub-cell:
+
+| Char  | SubCell  |
+|-------|----------|
+| ` `   | Blocked  |
+| `#`   | Passable |
+| `H`   | Hole     |
+| `D`   | Door     |
+| `K`   | Key      |
+| `S`   | Shuffle  |
+
+Blocked is a space so corridors (passable cells) stand out visually against the empty background.
+
+Example 9×9 card row (center hole, left/right exits):
+```
+"   HHH   "
+"###HHH###"
+```
+
+Example 3×3 tile with a door on the left edge:
+```
+" # "
+"D# "
+" # "
+```
+
+---
+
 ## Card Data
 
 Cards are fixed templates loaded from JSON at startup. Card grids are 9×9 with the center 3×3 set to `Hole`. They carry no mutable state — mutations during interaction resolution are applied to a local copy, never to the definition.
@@ -268,3 +298,4 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 |---|---|---|
 | 2026-04-21 | Initial architecture document | Aurore |
 | 2026-04-22 | Clarify key/door pairing invariant (at most one pair per pass); add IReadOnlyGameState to rendering module rules; add R-to-restart to rendering conventions | Aurore |
+| 2026-04-22 | Replace verbose string-array grid format with compact row-string format (`#.HKSD` notation); document in new Asset Data Format section | Aurore |

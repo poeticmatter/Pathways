@@ -9,20 +9,21 @@ public static class DataLoader
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        ReadCommentHandling = JsonCommentHandling.Skip
     };
 
     private class JsonCard
     {
         public int Id { get; set; }
         public int HandSize { get; set; }
-        public string[][] Grid { get; set; } = [];
+        public string[] Grid { get; set; } = [];
     }
 
     private class JsonTile
     {
         public int Id { get; set; }
-        public string[][] Grid { get; set; } = [];
+        public string[] Grid { get; set; } = [];
     }
 
     public static List<CardDefinition> LoadCards(string filePath)
@@ -37,7 +38,7 @@ public static class DataLoader
             var grid = new SubCell[9, 9];
             for (int row = 0; row < 9; row++)
                 for (int col = 0; col < 9; col++)
-                    grid[row, col] = ParseSubCell(jc.Grid[row][col]);
+                    grid[row, col] = ParseSubCell(jc.Grid[row][col], filePath);
 
             cards.Add(new CardDefinition { Id = jc.Id, HandSize = jc.HandSize, Grid = grid });
         }
@@ -56,21 +57,21 @@ public static class DataLoader
             var grid = new SubCell[3, 3];
             for (int row = 0; row < 3; row++)
                 for (int col = 0; col < 3; col++)
-                    grid[row, col] = ParseSubCell(jt.Grid[row][col]);
+                    grid[row, col] = ParseSubCell(jt.Grid[row][col], filePath);
 
             tiles.Add(new MapTile { DefinitionId = jt.Id, Grid = grid });
         }
         return tiles;
     }
 
-    private static SubCell ParseSubCell(string value) => value.ToLowerInvariant() switch
+    private static SubCell ParseSubCell(char c, string filePath) => c switch
     {
-        "blocked"  => SubCell.Blocked,
-        "passable" => SubCell.Passable,
-        "hole"     => SubCell.Hole,
-        "door"     => SubCell.Door,
-        "key"      => SubCell.Key,
-        "shuffle"  => SubCell.Shuffle,
-        _ => throw new InvalidOperationException($"Unknown subcell type: '{value}'")
+        ' ' => SubCell.Blocked,
+        '#' => SubCell.Passable,
+        'H' => SubCell.Hole,
+        'D' => SubCell.Door,
+        'K' => SubCell.Key,
+        'S' => SubCell.Shuffle,
+        _ => throw new InvalidOperationException($"Unknown subcell character '{c}' in '{filePath}'")
     };
 }
