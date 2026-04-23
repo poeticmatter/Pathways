@@ -258,13 +258,14 @@ Map tiles are 3×3 grids. Each tile carries a `role` field (`TileRole` enum):
 |----------|---------|
 | `normal` | Eligible for random placement on the map |
 | `start`  | Always placed at the entry cell `(0, 4)` |
+| `center` | Always placed at the center cell `(2, 2)`; must contain the `Shuffle` sub-cell that triggers a reshuffle |
 
-The reshuffle tile is identified by having a `Shuffle` sub-cell at its center `(1, 1)` and is always placed at `(2, 2)`. Exactly one tile must have `role: start`; it is excluded from the random pool.
+Exactly one tile must have `role: start` and exactly one must have `role: center`; both are excluded from the random pool.
 
 At game start:
 - The start tile is placed at `(0, 4)`.
-- The reshuffle tile is placed at `(2, 2)`.
-- The remaining pool tiles are shuffled and fill the other 23 cells.
+- The center tile is placed at `(2, 2)`.
+- The remaining pool tiles (those with `role: normal`) are shuffled and fill the other 23 cells.
 
 Each tile's mutable state is a deep copy — tiles share no data between cells.
 
@@ -332,3 +333,4 @@ Data        (CardDefinition, MapTile, enums — no behavior)
 | 2026-04-22 | Replace verbose string-array grid format with compact row-string format (`#.HKSD` notation); document in new Asset Data Format section | Aurore |
 | 2026-04-22 | Add Discard action mechanic; add HandSize label on top-left sub-cell of cards; update rendering conventions | Aurore |
 | 2026-04-22 | Replace magic Id==0 with CardRole/TileRole enums; start card and start tile are now declared in JSON via role field | Aurore |
+| 2026-04-23 | Add `TileRole.Center`; center tile is now declared in JSON via `role: center` instead of being identified by Shuffle sub-cell position | Aurore |

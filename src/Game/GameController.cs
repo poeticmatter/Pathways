@@ -38,19 +38,18 @@ public class GameController
         var deckCards = _allCards.Where(c => c.Role != CardRole.Start).ToList();
         _state.Deck.AddRange(deckCards.OrderBy(x => random.Next()));
 
-        var reshuffleTile = _allTiles.FirstOrDefault(t => t.Grid[1, 1] == SubCell.Shuffle)
-            ?? throw new InvalidOperationException("No tile with a Shuffle sub-cell at center (1,1) found in tiles.json");
+        var centerTile = _allTiles.FirstOrDefault(t => t.Role == TileRole.Center)
+            ?? throw new InvalidOperationException("No tile with role 'center' found in tiles.json");
         var startTile = _allTiles.FirstOrDefault(t => t.Role == TileRole.Start)
             ?? throw new InvalidOperationException("No tile with role 'start' found in tiles.json");
-        var poolTiles = _allTiles.Where(t => t.DefinitionId != reshuffleTile.DefinitionId && t.Role != TileRole.Start).ToList();
+        var poolTiles = _allTiles.Where(t => t.Role == TileRole.Normal).ToList();
 
         int mapRows = _state.Map.GetLength(0);
         int mapCols = _state.Map.GetLength(1);
         int poolCount = mapRows * mapCols - 2;
 
-        if (poolTiles.Count < poolCount)
-            throw new InvalidOperationException(
-                $"tiles.json has only {poolTiles.Count} pool tiles; {poolCount} are required to fill the map.");
+        if (poolTiles.Count == 0)
+            throw new InvalidOperationException("tiles.json has no pool tiles (role: normal); at least one is required.");
 
         // Entry cell (0,4): player enters from the left edge
         var startCell = new MapCoord(Col: 0, Row: 4);
@@ -59,15 +58,13 @@ public class GameController
         const int reshuffleRow = 2;
         const int reshuffleCol = 2;
 
-        var shuffledTiles = poolTiles.OrderBy(x => random.Next()).Take(poolCount).ToList();
-        int tileIndex = 0;
         for (int row = 0; row < mapRows; row++)
         {
             for (int col = 0; col < mapCols; col++)
             {
-                _state.Map[row, col] = (col == reshuffleCol && row == reshuffleRow) ? reshuffleTile.Clone()
+                _state.Map[row, col] = (col == reshuffleCol && row == reshuffleRow) ? centerTile.Clone()
                     : (col == startCell.Col && row == startCell.Row)               ? startTile.Clone()
-                    :                                                                 shuffledTiles[tileIndex++].Clone();
+                    :                                                                 poolTiles[random.Next(poolTiles.Count)].Clone();
             }
         }
 

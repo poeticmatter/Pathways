@@ -77,6 +77,7 @@ public static class DataLoader
     {
         null or "normal" => TileRole.Normal,
         "start"          => TileRole.Start,
+        "center"         => TileRole.Center,
         _                => throw new InvalidOperationException($"Unknown tile role '{role}' in '{filePath}'")
     };
 

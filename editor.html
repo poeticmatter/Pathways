@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card Pathways — Editor</title>
+<style>
+  :root {
+    --bg:       #0d0d17;
+    --surface:  #161626;
+    --surface2: #1e1e32;
+    --border:   #2a2a45;
+    --text:     #dde4f0;
+    --dim:      #6a748a;
+    --blocked:  #09090f;
+    --passable: #16a34a;
+    --pass-hi:  #22c55e;
+    --hole:     #4c1d95;
+    --shuffle:  #b45309;
+    --midpoint: #2563eb;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 12px/1.5 'Courier New', monospace;
+    padding: 16px 20px 40px;
+  }
+
+  /* ── toolbar ─────────────────────────────────────────────── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .toolbar-title { color: var(--dim); margin-right: auto; font-size: 0.85rem; }
+  .toolbar-sep { width: 1px; height: 20px; background: var(--border); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 11px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    border-radius: 3px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.1s, border-color 0.1s;
+    user-select: none;
+  }
+  .btn:hover { background: var(--border); }
+  .btn.green { border-color: var(--pass-hi); color: var(--pass-hi); }
+  .btn.green:hover { background: #14532d; }
+  label.btn input[type="file"] { display: none; }
+
+  /* ── panels ──────────────────────────────────────────────── */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+
+  .panel-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    margin-bottom: 14px;
+  }
+
+  .items-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  /* ── card / tile item ────────────────────────────────────── */
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px;
+  }
+
+  .item-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 0.68rem;
+    color: var(--dim);
+  }
+  .item-header .item-id { font-size: 0.72rem; color: var(--text); }
+
+  .badge {
+    font-size: 0.6rem;
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .badge.start  { border-color: #b45309; color: #fbbf24; }
+  .badge.center { border-color: #1d4ed8; color: #60a5fa; }
+
+  .handsize-input {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.68rem;
+    width: 52px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .handsize-input:focus { outline: 1px solid var(--midpoint); }
+
+  .delete-btn {
+    margin-left: 4px;
+    background: none;
+    border: none;
+    color: var(--dim);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    padding: 0 2px;
+    line-height: 1;
+    border-radius: 2px;
+    transition: color 0.1s;
+  }
+  .delete-btn:hover { color: #f87171; }
+
+  /* ── cell grid ───────────────────────────────────────────── */
+  .cell-grid {
+    display: grid;
+    gap: 1px;
+    background: #000;
+    border: 1px solid #000;
+    border-radius: 1px;
+    user-select: none;
+  }
+
+  .cell {
+    cursor: pointer;
+    position: relative;
+    transition: filter 0.08s;
+  }
+  .cell:hover { filter: brightness(1.35); }
+  .cell.locked { cursor: default; }
+  .cell.locked:hover { filter: none; }
+
+  .cell.blocked  { background: var(--blocked); }
+  .cell.passable { background: var(--passable); }
+  .cell.hole     { background: var(--hole); }
+  .cell.shuffle  { background: var(--shuffle); }
+
+  /* blue inset ring marks the four connection midpoints */
+  .cell.midpoint { box-shadow: inset 0 0 0 2px var(--midpoint); }
+  .cell.midpoint.passable { box-shadow: inset 0 0 0 2px #60a5fa; }
+  .cell.midpoint.shuffle  { box-shadow: inset 0 0 0 2px #93c5fd; }
+
+  /* ── entry / connectivity summary ────────────────────────── */
+  .summary {
+    margin-top: 5px;
+    font-size: 0.62rem;
+    text-align: center;
+    letter-spacing: 0.06em;
+  }
+  .edge-open   { color: var(--pass-hi); }
+  .edge-closed { color: var(--dim); }
+
+  /* ── legend ──────────────────────────────────────────────── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .swatch {
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="toolbar-title">Card Pathways — Grid Editor</span>
+
+  <label class="btn">Load cards.json
+    <input type="file" accept=".json" onchange="loadFile(event,'cards')">
+  </label>
+  <button class="btn green" onclick="download('cards')">&#8659; cards.json</button>
+
+  <div class="toolbar-sep"></div>
+
+  <label class="btn">Load tiles.json
+    <input type="file" accept=".json" onchange="loadFile(event,'tiles')">
+  </label>
+  <button class="btn green" onclick="download('tiles')">&#8659; tiles.json</button>
+</div>
+
+<div class="panels">
+  <div id="cardsPanel">
+    <div class="panel-title">Cards — 9×9</div>
+    <div class="items-grid" id="cardsGrid"></div>
+  </div>
+  <div id="tilesPanel">
+    <div class="panel-title">Tiles — 3×3 center</div>
+    <div class="items-grid" id="tilesGrid"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="swatch" style="background:var(--blocked);border:1px solid var(--border)"></div> Blocked
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:var(--passable)"></div> Passable
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:var(--hole)"></div> Hole (locked)
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:var(--shuffle)"></div> Shuffle
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="box-shadow:inset 0 0 0 2px var(--midpoint);background:var(--blocked);border:1px solid var(--border)"></div>
+    Connection point
+  </div>
+  <div class="legend-item" style="font-style:italic">
+    Click: blocked ↔ passable &nbsp;·&nbsp; Shift+click: toggle shuffle &nbsp;·&nbsp; Open edges shown green in summary
+  </div>
+</div>
+
+<script>
+// ── embedded default data ───────────────────────────────────────────────────
+
+const DEFAULT_CARDS = [
+  { "id": 0, "role": "start", "handSize": 3, "grid": [
+    "    #    ",
+    " ####### ",
+    " #     # ",
+    " # HHH # ",
+    "## HHH ##",
+    " # HHH # ",
+    " #     # ",
+    " ####### ",
+    "    #    " ] },
+  { "id": 1, "handSize": 3, "grid": [
+    "    #    ",
+    "    #### ",
+    "       # ",
+    "   HHH # ",
+    "## HHH ##",
+    " # HHH   ",
+    " #       ",
+    " ####    ",
+    "    #    " ] },
+  { "id": 2, "handSize": 3, "grid": [
+    "    #    ",
+    "    #    ",
+    "    #    ",
+    "   HHH   ",
+    "   HHH   ",
+    "   HHH   ",
+    "    #    ",
+    "    #    ",
+    "    #    " ] },
+  { "id": 3, "handSize": 3, "grid": [
+    "    #    ",
+    "    #    ",
+    "    #    ",
+    "   HHH   ",
+    "###HHH   ",
+    "   HHH   ",
+    "         ",
+    "         ",
+    "         " ] },
+  { "id": 4, "handSize": 3, "grid": [
+    "    #    ",
+    "    #    ",
+    "    #    ",
+    "   HHH   ",
+    "   HHH###",
+    "   HHH   ",
+    "    #    ",
+    "    #    ",
+    "    #    " ] },
+  { "id": 5, "handSize": 3, "grid": [
+    "    #    ",
+    "    #    ",
+    "    #    ",
+    "   HHH   ",
+    "###HHH###",
+    "   HHH   ",
+    "    #    ",
+    "    #    ",
+    "    #    " ] },
+  { "id": 6, "handSize": 3, "grid": [
+    "    #    ",
+    "    #### ",
+    "       # ",
+    "   HHH # ",
+    "###HHH # ",
+    "   HHH # ",
+    "       # ",
+    "    #### ",
+    "    #    " ] },
+  { "id": 7, "handSize": 3, "grid": [
+    "    #    ",
+    "    #    ",
+    "    #    ",
+    "   HHH   ",
+    "###HHH ##",
+    "   HHH # ",
+    "       # ",
+    "    #### ",
+    "    #    " ] },
+  { "id": 8, "handSize": 3, "grid": [
+    "    #    ",
+    " ####    ",
+    " #  #    ",
+    " # HHH   ",
+    "###HHH   ",
+    "   HHH   ",
+    "         ",
+    "         ",
+    "         " ] },
+  { "id": 9, "handSize": 3, "grid": [
+    "    #    ",
+    "    #### ",
+    "       # ",
+    "   HHH # ",
+    "   HHH## ",
+    "   HHH   ",
+    "    #    ",
+    "    #    ",
+    "    #    " ] },
+  { "id": 10, "handSize": 3, "grid": [
+    "    #    ",
+    "    #### ",
+    "       # ",
+    "   HHH # ",
+    " ##HHH## ",
+    " # HHH   ",
+    " #       ",
+    " ####    ",
+    "    #    " ] }
+];
+
+const DEFAULT_TILES = [
+  { "id": 1,  "role": "start",  "grid": [" # ", " S#", "   "] },
+  { "id": 2,  "grid": [" # ", " # ", " # "] },
+  { "id": 3,  "grid": [" # ", "## ", "   "] },
+  { "id": 4,  "grid": ["   ", " ##", " # "] },
+  { "id": 5,  "grid": ["   ", "## ", " # "] },
+  { "id": 6,  "grid": [" # ", "## ", " # "] },
+  { "id": 7,  "grid": [" # ", "###", "   "] },
+  { "id": 8,  "grid": ["   ", "###", " # "] },
+  { "id": 9,  "grid": [" # ", " ##", " # "] },
+  { "id": 10, "grid": [" # ", "###", " # "] },
+  { "id": 11, "grid": ["   ", "###", "   "] },
+  { "id": 12, "grid": ["   ", " ##", "   "] },
+  { "id": 13, "grid": [" # ", " # ", "   "] },
+  { "id": 14, "grid": ["   ", "## ", "   "] },
+  { "id": 15, "grid": ["   ", " # ", " # "] },
+  { "id": 16, "grid": [" ##", "# #", "## "] },
+  { "id": 17, "grid": ["## ", "# #", " ##"] },
+  { "id": 18, "grid": [" # ", "###", "   "] },
+  { "id": 19, "grid": [" # ", "## ", " # "] },
+  { "id": 20, "grid": [" # ", " # ", " # "] },
+  { "id": 21, "grid": [" # ", "###", " # "] },
+  { "id": 22, "grid": [" ##", "# #", "## "] },
+  { "id": 23, "role": "center", "grid": [" # ", "#S#", " # "] },
+  { "id": 24, "grid": ["   ", "###", "   "] },
+  { "id": 25, "grid": [" # ", " # ", "   "] }
+];
+
+// ── state ───────────────────────────────────────────────────────────────────
+
+let cards = [];
+let tiles = [];
+
+// ── grid helpers ────────────────────────────────────────────────────────────
+
+function parseGrid(rows, width) {
+  return rows.map(row => {
+    const chars = [...row];
+    while (chars.length < width) chars.push(' ');
+    return chars.slice(0, width);
+  });
+}
+
+function serializeGrid(grid) {
+  return grid.map(row => row.join(''));
+}
+
+function isCardHole(r, c) {
+  return r >= 3 && r <= 5 && c >= 3 && c <= 5;
+}
+
+function isCardMidpoint(r, c) {
+  return (r === 4 && (c === 0 || c === 8)) || (c === 4 && (r === 0 || r === 8));
+}
+
+function isTileMidpoint(r, c) {
+  return (r === 1 && (c === 0 || c === 2)) || (c === 1 && (r === 0 || r === 2));
+}
+
+function charToClass(ch) {
+  if (ch === '#') return 'passable';
+  if (ch === 'H') return 'hole';
+  if (ch === 'S') return 'shuffle';
+  return 'blocked';
+}
+
+function isOpen(ch) {
+  return ch === '#' || ch === 'S';
+}
+
+// ── card summary ─────────────────────────────────────────────────────────────
+
+function cardEdges(grid) {
+  return {
+    T: isOpen(grid[0]?.[4]),
+    B: isOpen(grid[8]?.[4]),
+    L: isOpen(grid[4]?.[0]),
+    R: isOpen(grid[4]?.[8]),
+  };
+}
+
+function renderCardSummary(grid) {
+  const e = cardEdges(grid);
+  const fmt = (label, open) =>
+    `<span class="${open ? 'edge-open' : 'edge-closed'}">${label}</span>`;
+  return fmt('T', e.T) + ' ' + fmt('B', e.B) + ' ' + fmt('L', e.L) + ' ' + fmt('R', e.R);
+}
+
+// ── tile summary ──────────────────────────────────────────────────────────────
+
+function tileEdges(grid) {
+  return {
+    T: isOpen(grid[0]?.[1]),
+    B: isOpen(grid[2]?.[1]),
+    L: isOpen(grid[1]?.[0]),
+    R: isOpen(grid[1]?.[2]),
+  };
+}
+
+function renderTileSummary(grid) {
+  const e = tileEdges(grid);
+  const fmt = (label, open) =>
+    `<span class="${open ? 'edge-open' : 'edge-closed'}">${label}</span>`;
+  return fmt('T', e.T) + ' ' + fmt('B', e.B) + ' ' + fmt('L', e.L) + ' ' + fmt('R', e.R);
+}
+
+// ── cell toggle ───────────────────────────────────────────────────────────────
+
+function toggleCard(item, r, c) {
+  if (isCardHole(r, c)) return false;
+  const cur = item._grid[r][c];
+  item._grid[r][c] = cur === '#' ? ' ' : '#';
+  return true;
+}
+
+function toggleTile(item, r, c, shift) {
+  const cur = item._grid[r][c];
+  if (shift) {
+    item._grid[r][c] = cur === 'S' ? ' ' : 'S';
+  } else {
+    item._grid[r][c] = cur === '#' ? ' ' : '#';
+  }
+  return true;
+}
+
+// ── build card item ──────────────────────────────────────────────────────────
+
+const CARD_CELL_PX = 20;
+const TILE_CELL_PX = 34;
+
+function buildCardItem(card) {
+  const wrap = document.createElement('div');
+  wrap.className = 'item';
+  wrap.dataset.id = card.id;
+
+  // header
+  const hdr = document.createElement('div');
+  hdr.className = 'item-header';
+  hdr.innerHTML = `<span class="item-id">card&nbsp;${card.id}</span>`;
+  if (card.role) {
+    hdr.innerHTML += `<span class="badge ${card.role}">${card.role}</span>`;
+  }
+
+  const hsLabel = document.createElement('span');
+  hsLabel.style.cssText = 'margin-left:auto;color:var(--dim);font-size:0.65rem;';
+  hsLabel.textContent = 'hand:';
+  hdr.appendChild(hsLabel);
+
+  const hsInput = document.createElement('input');
+  hsInput.type = 'number';
+  hsInput.min = 1; hsInput.max = 9;
+  hsInput.value = card.handSize ?? 3;
+  hsInput.className = 'handsize-input';
+  hsInput.title = 'Hand size';
+  hsInput.oninput = () => { card.handSize = parseInt(hsInput.value, 10) || 3; };
+  hdr.appendChild(hsInput);
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'delete-btn';
+  delBtn.title = 'Delete card';
+  delBtn.textContent = '✕';
+  delBtn.onclick = () => {
+    cards = cards.filter(c => c.id !== card.id);
+    wrap.remove();
+  };
+  hdr.appendChild(delBtn);
+
+  wrap.appendChild(hdr);
+
+  // grid
+  const gridEl = document.createElement('div');
+  gridEl.className = 'cell-grid';
+  gridEl.style.gridTemplateColumns = `repeat(9, ${CARD_CELL_PX}px)`;
+  gridEl.style.gridTemplateRows    = `repeat(9, ${CARD_CELL_PX}px)`;
+
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const ch   = card._grid[r]?.[c] ?? ' ';
+      const cell = document.createElement('div');
+      const hole = isCardHole(r, c);
+      const mid  = isCardMidpoint(r, c);
+
+      cell.className = 'cell ' + charToClass(ch) + (hole ? ' locked' : '') + (mid ? ' midpoint' : '');
+
+      if (!hole) {
+        cell.onclick = e => {
+          if (toggleCard(card, r, c)) {
+            const newCh = card._grid[r][c];
+            cell.className = 'cell ' + charToClass(newCh) + (mid ? ' midpoint' : '');
+            summaryEl.innerHTML = renderCardSummary(card._grid);
+          }
+        };
+      }
+      gridEl.appendChild(cell);
+    }
+  }
+  wrap.appendChild(gridEl);
+
+  // summary
+  const summaryEl = document.createElement('div');
+  summaryEl.className = 'summary';
+  summaryEl.innerHTML = renderCardSummary(card._grid);
+  wrap.appendChild(summaryEl);
+
+  return wrap;
+}
+
+// ── build tile item ──────────────────────────────────────────────────────────
+
+function buildTileItem(tile) {
+  const wrap = document.createElement('div');
+  wrap.className = 'item';
+  wrap.dataset.id = tile.id;
+
+  // header
+  const hdr = document.createElement('div');
+  hdr.className = 'item-header';
+  hdr.innerHTML = `<span class="item-id">tile&nbsp;${tile.id}</span>`;
+  if (tile.role) {
+    hdr.innerHTML += `<span class="badge ${tile.role}">${tile.role}</span>`;
+  }
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'delete-btn';
+  delBtn.style.marginLeft = 'auto';
+  delBtn.title = 'Delete tile';
+  delBtn.textContent = '✕';
+  delBtn.onclick = () => {
+    tiles = tiles.filter(t => t.id !== tile.id);
+    wrap.remove();
+  };
+  hdr.appendChild(delBtn);
+  wrap.appendChild(hdr);
+
+  // grid
+  const gridEl = document.createElement('div');
+  gridEl.className = 'cell-grid';
+  gridEl.style.gridTemplateColumns = `repeat(3, ${TILE_CELL_PX}px)`;
+  gridEl.style.gridTemplateRows    = `repeat(3, ${TILE_CELL_PX}px)`;
+
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      const ch   = tile._grid[r]?.[c] ?? ' ';
+      const mid  = isTileMidpoint(r, c);
+      const cell = document.createElement('div');
+      cell.className = 'cell ' + charToClass(ch) + (mid ? ' midpoint' : '');
+
+      cell.onclick = e => {
+        if (toggleTile(tile, r, c, e.shiftKey)) {
+          const newCh = tile._grid[r][c];
+          cell.className = 'cell ' + charToClass(newCh) + (mid ? ' midpoint' : '');
+          summaryEl.innerHTML = renderTileSummary(tile._grid);
+        }
+      };
+      gridEl.appendChild(cell);
+    }
+  }
+  wrap.appendChild(gridEl);
+
+  // summary
+  const summaryEl = document.createElement('div');
+  summaryEl.className = 'summary';
+  summaryEl.innerHTML = renderTileSummary(tile._grid);
+  wrap.appendChild(summaryEl);
+
+  return wrap;
+}
+
+// ── render panels ────────────────────────────────────────────────────────────
+
+function renderCards() {
+  const container = document.getElementById('cardsGrid');
+  container.innerHTML = '';
+  cards.forEach(c => container.appendChild(buildCardItem(c)));
+}
+
+function renderTiles() {
+  const container = document.getElementById('tilesGrid');
+  container.innerHTML = '';
+  tiles.forEach(t => container.appendChild(buildTileItem(t)));
+}
+
+// ── file I/O ─────────────────────────────────────────────────────────────────
+
+function loadFile(event, type) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (type === 'cards') {
+        cards = parsed.map(item => ({
+          ...item,
+          _grid: parseGrid(item.grid, 9)
+        }));
+        renderCards();
+      } else {
+        tiles = parsed.map(item => ({
+          ...item,
+          _grid: parseGrid(item.grid, 3)
+        }));
+        renderTiles();
+      }
+    } catch (err) {
+      alert('Failed to parse JSON: ' + err.message);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function download(type) {
+  const isCard = type === 'cards';
+  const data   = isCard ? cards : tiles;
+  const width  = isCard ? 9 : 3;
+
+  const serialized = data.map(item => {
+    const { _grid, ...rest } = item;
+    return { ...rest, grid: serializeGrid(_grid) };
+  });
+
+  const json = JSON.stringify(serialized, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = isCard ? 'cards.json' : 'tiles.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── init ──────────────────────────────────────────────────────────────────────
+
+function init() {
+  cards = DEFAULT_CARDS.map(item => ({
+    ...item,
+    _grid: parseGrid(item.grid, 9)
+  }));
+  tiles = DEFAULT_TILES.map(item => ({
+    ...item,
+    _grid: parseGrid(item.grid, 3)
+  }));
+  renderCards();
+  renderTiles();
+}
+
+init();
+</script>
+</body>
+</html>

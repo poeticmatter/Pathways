@@ -2,7 +2,7 @@ namespace CardPathways.Data;
 
 public enum CardRole { Normal, Start }
 
-public enum TileRole { Normal, Start }
+public enum TileRole { Normal, Start, Center }
 
 public enum SubCell
 {
