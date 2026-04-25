@@ -69,20 +69,8 @@ public class Renderer
 
         if (_selectedCard != null)
         {
-            CardRotation? rotation = null;
-            if (Raylib.IsKeyPressed(KeyboardKey.E)) rotation = CardRotation.Clockwise;
-            else if (Raylib.IsKeyPressed(KeyboardKey.Q)) rotation = CardRotation.CounterClockwise;
-
-            if (rotation.HasValue)
-            {
-                var rotated = _gameController.TryRotateSelectedCard(_selectedCard, rotation.Value);
-                if (rotated != null)
-                {
-                    _selectedCard = rotated;
-                    _validTargets = ComputeValidTargets(rotated);
-                }
-                return;
-            }
+            if (Raylib.IsKeyPressed(KeyboardKey.E)) { ApplyRotation(CardRotation.Clockwise); return; }
+            if (Raylib.IsKeyPressed(KeyboardKey.Q)) { ApplyRotation(CardRotation.CounterClockwise); return; }
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left))
@@ -95,6 +83,20 @@ public class Renderer
                     _gameController.TryDiscardCard(_selectedCard);
                     _selectedCard = null;
                     _validTargets = null;
+                    return;
+                }
+
+                var rotateCCWRect = new Rectangle(Layout.RotateCCWButtonX, Layout.RotateButtonY, Layout.RotateButtonWidth, Layout.RotateButtonHeight);
+                if (Raylib.CheckCollisionPointRec(mousePos, rotateCCWRect))
+                {
+                    ApplyRotation(CardRotation.CounterClockwise);
+                    return;
+                }
+
+                var rotateCWRect = new Rectangle(Layout.RotateCWButtonX, Layout.RotateButtonY, Layout.RotateButtonWidth, Layout.RotateButtonHeight);
+                if (Raylib.CheckCollisionPointRec(mousePos, rotateCWRect))
+                {
+                    ApplyRotation(CardRotation.Clockwise);
                     return;
                 }
             }
@@ -150,6 +152,17 @@ public class Renderer
     {
         _selectedCard = card;
         _validTargets = ComputeValidTargets(card);
+    }
+
+    private void ApplyRotation(CardRotation rotation)
+    {
+        if (_selectedCard == null) return;
+        var rotated = _gameController.TryRotateSelectedCard(_selectedCard, rotation);
+        if (rotated != null)
+        {
+            _selectedCard = rotated;
+            _validTargets = ComputeValidTargets(rotated);
+        }
     }
 
     private HashSet<MapCoord> ComputeValidTargets(CardDefinition card)
@@ -301,11 +314,17 @@ public class Renderer
         Raylib.DrawRectangle(Layout.QuitButtonX, Layout.QuitButtonY, Layout.QuitButtonWidth, Layout.QuitButtonHeight, new Color(120, 40, 40, 255));
         Raylib.DrawText("QUIT", Layout.QuitButtonX + 20, Layout.QuitButtonY + 8, 18, Color.White);
 
-        var discardButtonColor = _selectedCard != null
+        var actionButtonColor = _selectedCard != null
             ? new Color(160, 80, 20, 255)
             : new Color(55, 55, 55, 255);
-        Raylib.DrawRectangle(Layout.DiscardButtonX, Layout.DiscardButtonY, Layout.DiscardButtonWidth, Layout.DiscardButtonHeight, discardButtonColor);
+        Raylib.DrawRectangle(Layout.DiscardButtonX, Layout.DiscardButtonY, Layout.DiscardButtonWidth, Layout.DiscardButtonHeight, actionButtonColor);
         Raylib.DrawText("DISCARD", Layout.DiscardButtonX + 10, Layout.DiscardButtonY + 6, 16, Color.White);
+
+        Raylib.DrawRectangle(Layout.RotateCCWButtonX, Layout.RotateButtonY, Layout.RotateButtonWidth, Layout.RotateButtonHeight, actionButtonColor);
+        Raylib.DrawText("< Q", Layout.RotateCCWButtonX + 10, Layout.RotateButtonY + 6, 16, Color.White);
+
+        Raylib.DrawRectangle(Layout.RotateCWButtonX, Layout.RotateButtonY, Layout.RotateButtonWidth, Layout.RotateButtonHeight, actionButtonColor);
+        Raylib.DrawText("E >", Layout.RotateCWButtonX + 10, Layout.RotateButtonY + 6, 16, Color.White);
 
         if (_statusMessage != null && Raylib.GetTime() < _statusMessageExpiry)
             Raylib.DrawText(_statusMessage, Layout.MapStartX, Layout.WindowHeight - 30, 18, Color.Orange);

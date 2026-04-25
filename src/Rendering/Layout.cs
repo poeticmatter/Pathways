@@ -34,6 +34,12 @@ public static class Layout
     public const int DiscardButtonWidth = 130;
     public const int DiscardButtonHeight = 30;
 
+    public const int RotateButtonWidth = 60;
+    public const int RotateButtonHeight = DiscardButtonHeight;
+    public const int RotateButtonY = DiscardButtonY;
+    public const int RotateCCWButtonX = DiscardButtonX + DiscardButtonWidth + 10;
+    public const int RotateCWButtonX = RotateCCWButtonX + RotateButtonWidth + 5;
+
     public static readonly Color ColorHandSizeLabel = new Color(255, 220, 60, 255);
     public const int HandSizeFontSize = 12;
 
